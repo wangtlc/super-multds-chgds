@@ -15,6 +15,7 @@ import com.sitech.core.EchnContextUtils;
 
 /**
  * Servlet Filter implementation class MyFilter
+ * 测试类
  */
 public class CoreInitFilter implements Filter {
 	

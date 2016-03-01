@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+	
+<!--
+说明：充值中心独有        分库路由
+使用方法：调用DataSourceHolder.convertEcora();即可。
+ ======================================================================================= -->	
+
+<!-- 订单处理：ibatis -->
+	<bean id="ibatisManager_router_ecora" class="com.sitech.core.architecture.ibatis.IbatisManager">
+		<property name="dao">
+			<ref bean="ibatisDao_router_ecora" />
+		</property>
+	</bean>
+	<bean id="ibatisDao_router_ecora" class="com.sitech.core.architecture.ibatis.IbatisDao">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient_router_ecora" />
+		</property>
+	</bean>
+	<bean id="sqlMapClient_router_ecora" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+		<property name="configLocation">
+			<value>classpath:SqlMapConfig.xml</value>
+		</property>
+		<property name="dataSource">
+			<ref bean="dataSource_router_ecora" />
+		</property>
+	</bean>
+	
+<!-- 订单处理：jdbctemplate -->
+	<bean id="jdbcTemplate_router_ecora" class="org.springframework.jdbc.core.JdbcTemplate">
+		<property name="dataSource">
+			<ref bean="dataSource_router_ecora" />
+		</property>
+	</bean>			
+</beans>

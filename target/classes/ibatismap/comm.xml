@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="td_ptl_role_func">
+	<typeAlias alias="str" type="java.lang.String" />
+	<select id="qry_role_func" parameterClass="java.util.Map"
+		resultClass="str">
+ 	<![CDATA[
+		SELECT func_code FROM td_ptl_role_func  where role_id = #role_id# and convert(int,#sys_id#) = sys_id
+	  ]]>
+	</select>
+	<!-- resultMap做映射 -->
+	<resultMap id="getUrlMap" class="java.util.HashMap">
+		<result property="page_code" column="page_code" javaType="java.lang.String" />
+		<result property="url" column="url" javaType="java.lang.String" />
+	</resultMap>
+	<select id="qry_url_code" resultMap="getUrlMap">
+ 	<![CDATA[
+		SELECT page_code,url FROM td_ptl_page_info
+	  ]]>
+	</select>
+</sqlMap>

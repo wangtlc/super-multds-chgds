@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+<!-- JNDI 充值  A库 -->
+	<bean id="dataSource_ecora" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" value="org.gjt.mm.mysql.Driver" />
+		<property name="url" value="${db.ecora.url}"/>
+		<property name="username" value="${db.ecora.username}" />
+		<property name="password" value="${db.ecora.password}" />
+		<property name="initialSize" value="1" />
+		<property name="maxActive" value="500" />
+		<property name="maxIdle" value="2" />
+		<property name="minIdle" value="1" />
+	</bean>
+	
+<!-- JNDI 充值 B库 -->
+	<bean id="dataSource_ecora2" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" value="org.gjt.mm.mysql.Driver" />
+		<property name="url" value="${db.ecora2.url}"/>
+		<property name="username" value="${db.ecora2.username}" />
+		<property name="password" value="${db.ecora2.password}" />
+		<property name="initialSize" value="1" />
+		<property name="maxActive" value="500" />
+		<property name="maxIdle" value="2" />
+		<property name="minIdle" value="1" />
+	</bean>
+	
+<!-- JNDI 报表库 -->
+	<bean id="dataSource_rptdb" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" value="org.gjt.mm.mysql.Driver" />
+		<property name="url" value="${db.rptdb.url}"/>
+		<property name="username" value="${db.rptdb.username}" />
+		<property name="password" value="${db.rptdb.password}" />
+		<property name="initialSize" value="1" />
+		<property name="maxActive" value="500" />
+		<property name="maxIdle" value="2" />
+		<property name="minIdle" value="1" />
+	</bean>			
+	
+<!-- JNDI 查询库 -->
+	<bean id="dataSource_qrydb" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" value="org.gjt.mm.mysql.Driver" />
+		<property name="url" value="${db.qrydb.url}"/>
+		<property name="username" value="${db.qrydb.username}" />
+		<property name="password" value="${db.qrydb.password}" />
+		<property name="initialSize" value="1" />
+		<property name="maxActive" value="500" />
+		<property name="maxIdle" value="2" />
+		<property name="minIdle" value="1" />
+	</bean>
+	
+<!-- JNDI 用户库 -->
+	<bean id="dataSource_usrdb" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" value="org.gjt.mm.mysql.Driver" />
+		<property name="url" value="${db.usrdb.url}"/>
+		<property name="username" value="${db.usrdb.username}" />
+		<property name="password" value="${db.usrdb.password}" />
+		<property name="initialSize" value="1" />
+		<property name="maxActive" value="500" />
+		<property name="maxIdle" value="2" />
+		<property name="minIdle" value="1" />
+	</bean>				
+	 
+<!-- ======================================================================================= -->	
+
+<!-- 系统菜单库，默认为用户库，该库挂掉后自动切为充值A库 -->
+	<bean id="dataSource_router_sys" class="com.sitech.ext.DataSource4RouterSys">
+		<property name="targetDataSources">
+	      <map key-type="java.lang.String">
+	         <entry key="dataSource_usrdb" value-ref="dataSource_usrdb"/>
+	         <entry key="dataSource_ecora" value-ref="dataSource_ecora"/>
+	      </map>
+	   </property>
+	   <property name="defaultTargetDataSource" ref="dataSource_usrdb"/>
+	</bean>
+	
+<!-- 充值订单库，默认为A库，根据路由可将部分订单转入B库 -->
+	<bean id="dataSource_router_ecora" class="com.sitech.ext.DataSource4RouterEcora">
+		<property name="targetDataSources"> 
+	      <map key-type="java.lang.String">
+	         <entry key="dataSource_ecora" value-ref="dataSource_ecora"/>
+	         <entry key="dataSource_ecora2" value-ref="dataSource_ecora2"/>
+	      </map>
+	   </property>
+	   <property name="defaultTargetDataSource" ref="dataSource_ecora"/>
+	</bean>
+</beans>
